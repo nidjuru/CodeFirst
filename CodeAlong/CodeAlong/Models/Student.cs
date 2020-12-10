@@ -10,5 +10,6 @@ namespace CodeAlong.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public ICollection<Student_Course> Student_Courses { get; set; }
     }
 }

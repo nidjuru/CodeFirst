@@ -32,8 +32,9 @@ namespace CodeAlong.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Course>> GetCourse(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-
+            var course = await _context.Courses
+                .Include(c => c.Teacher)
+                .FirstOrDefaultAsync(c => c.CourseId == id);//Studera denna LINQ, den tar en teacher och returnerar hans Tabell, eller slagning i vår Get.
             if (course == null)
             {
                 return NotFound();

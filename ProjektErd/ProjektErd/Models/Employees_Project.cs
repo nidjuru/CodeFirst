@@ -5,14 +5,11 @@ using System.Threading.Tasks;
 
 namespace ProjektErd.Models
 {
-    public class Project
+    public class Employees_Project
     {
+        public int EmployeeId { get; set; }
         public int ProjectId { get; set; }
-        public string ProjectManager { get; set; }
-        public string ProjectName { get; set; }
-        public int ProjectBudget { get; set; }
-        public int ProjectCode { get; set; }
         public Employees Employees { get; set; }
-
+        public Project Project { get; set; }
     }
 }

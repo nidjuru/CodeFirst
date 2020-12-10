@@ -14,5 +14,7 @@ namespace ProjectERDV2.Models
         public int? DepartmentId { get; set; }
         public Department Department { get; set; }
         public Payment Payment { get; set; }//Fråga om dessa imorn, varför behövs de?   
+        public ICollection<EmployeesProject> EmployeesProjects { get; set; }
+
     }
 }

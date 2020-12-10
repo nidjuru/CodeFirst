@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace StudentApi.Models
 {
-    public class Student
+    public class StudentCourse
     {
         public int StudentId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public ICollection<StudentCourse> StudentCourses { get; set; }
-
+        public int CourseId { get; set; }
+        public Student Student { get; set; }
+        public Course Courses { get; set; }
 
     }
 }

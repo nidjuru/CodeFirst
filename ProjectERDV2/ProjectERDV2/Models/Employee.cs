@@ -12,7 +12,7 @@ namespace ProjectERDV2.Models
         public string LastName { get; set; }
         public int? PaymentId { get; set; }
         public int? DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public Department Department { get; set; }//skapa alltid upp klasserna i tabellen som har foreign key,
         public Payment Payment { get; set; }//Fråga om dessa imorn, varför behövs de?   
         public ICollection<EmployeesProject> EmployeesProjects { get; set; }
 

@@ -7,7 +7,7 @@ namespace KopplingsTabell.Models
 {
     public class ReleaseDate//Dependant entity
     {
-        public int ReleasteDateId { get; set; }
+        public int ReleaseDateId { get; set; }
         public int RelaseDate { get; set; }
         public Book Book { get; set; }//navprop denna är one to many, dvs en bara här
     }

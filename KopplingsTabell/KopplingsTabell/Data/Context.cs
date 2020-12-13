@@ -9,10 +9,7 @@ namespace KopplingsTabell.Data
 {
     public class Context : DbContext
     {
-        public Context(DbContextOptions<Context> options)
-            : base(options)
-        {
-        }
+        public Context(DbContextOptions<Context> options): base(options){}
 
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }

@@ -11,6 +11,7 @@ namespace Bibliotek.Models
         public Author Author { get; set; }
         public int BookId { get; set; }
         public Book Book { get; set; }
+        //MISERIA
 
     }
 }

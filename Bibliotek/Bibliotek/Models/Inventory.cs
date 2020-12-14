@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Bibliotek.Models
 {
-    public class Rental
+    public class Inventory
     {
-        public int RentalId { get; set; }
-        public int? CustomerId { get; set; }
-        public List<Customer> Customers { get; set; }
+        public int IventoryId { get; set; }
+        public int? BookId { get; set; }
+        public List<Book> Books { get; set; }
         public Library Library { get; set; }
 
     }

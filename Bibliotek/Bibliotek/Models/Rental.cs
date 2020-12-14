@@ -8,6 +8,9 @@ namespace Bibliotek.Models
     public class Rental
     {
         public int RentalId { get; set; }
+        public DateTime? RentalDate { get; set; }
+        public int? ReturnDate { get; set; }
+        public bool? Rented { get; set; }
         public int? CustomerId { get; set; }
         public List<Customer> Customers { get; set; }
         public int? LibraryId { get; set; }

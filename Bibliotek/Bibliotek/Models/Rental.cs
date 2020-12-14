@@ -10,7 +10,9 @@ namespace Bibliotek.Models
         public int RentalId { get; set; }
         public int? CustomerId { get; set; }
         public List<Customer> Customers { get; set; }
+        public int? LibraryId { get; set; }
         public Library Library { get; set; }
+        
 
     }
 }

@@ -14,7 +14,6 @@ namespace VänstraSidan.Data
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Rental> Rentals { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-
+        public DbSet<Customer> Customers { get; set; }        
     }
 }

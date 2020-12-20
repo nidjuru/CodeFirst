@@ -32,5 +32,6 @@ namespace WebAPI.Data
                 .WithMany(c => c.Book_Authors)
                 .HasForeignKey(sc => sc.BookId);
         }
+        public DbSet<WebAPI.Models.Rating> Rating { get; set; }
     }
 }

@@ -17,21 +17,21 @@ namespace WebAPI.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book_Author> Book_Authors { get; set; }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Book_Author>()
-                .HasKey(sc => new { sc.AuthorId, sc.BookId });
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<Book_Author>()
+                    .HasKey(sc => new { sc.AuthorId, sc.BookId });
 
-            modelBuilder.Entity<Book_Author>()
-                .HasOne(sc => sc.Author)
-                .WithMany(s => s.Book_Authors)
-                .HasForeignKey(sc => sc.AuthorId);
+                modelBuilder.Entity<Book_Author>()
+                    .HasOne(sc => sc.Author)
+                    .WithMany(s => s.Book_Authors)
+                    .HasForeignKey(sc => sc.AuthorId);
 
-            modelBuilder.Entity<Book_Author>()
-                .HasOne(sc => sc.Book)
-                .WithMany(c => c.Book_Authors)
-                .HasForeignKey(sc => sc.BookId);
-        }
+                modelBuilder.Entity<Book_Author>()
+                    .HasOne(sc => sc.Book)
+                    .WithMany(c => c.Book_Authors)
+                    .HasForeignKey(sc => sc.BookId);
+            }
         public DbSet<WebAPI.Models.Rating> Rating { get; set; }
     }
 }

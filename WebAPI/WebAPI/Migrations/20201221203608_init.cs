@@ -13,8 +13,8 @@ namespace WebAPI.Migrations
                 {
                     AuthorId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthorFirstName = table.Column<string>(nullable: true),
-                    AuthorLastName = table.Column<string>(nullable: true)
+                    AuthorFirstName = table.Column<string>(maxLength: 40, nullable: true),
+                    AuthorLastName = table.Column<string>(maxLength: 40, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,8 +27,8 @@ namespace WebAPI.Migrations
                 {
                     CustomerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerFirstName = table.Column<string>(nullable: true),
-                    CustomerLastName = table.Column<string>(nullable: true),
+                    CustomerFirstName = table.Column<string>(maxLength: 40, nullable: true),
+                    CustomerLastName = table.Column<string>(maxLength: 40, nullable: true),
                     LibraryCard = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -98,10 +98,10 @@ namespace WebAPI.Migrations
                 {
                     BookId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(maxLength: 40, nullable: false),
                     ReleaseYear = table.Column<int>(nullable: false),
-                    ISBN = table.Column<long>(nullable: false),
-                    RatingId = table.Column<int>(nullable: true),
+                    ISBN = table.Column<long>(maxLength: 13, nullable: false),
+                    RatingId = table.Column<int>(nullable: false),
                     InventoryId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -118,7 +118,7 @@ namespace WebAPI.Migrations
                         column: x => x.RatingId,
                         principalTable: "Rating",
                         principalColumn: "RatingId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

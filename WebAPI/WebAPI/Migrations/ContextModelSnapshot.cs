@@ -27,10 +27,12 @@ namespace WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AuthorFirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("AuthorLastName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.HasKey("AuthorId");
 
@@ -45,19 +47,23 @@ namespace WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("ISBN")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasMaxLength(13);
 
                     b.Property<int?>("InventoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("RatingId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.HasKey("BookId");
 
@@ -91,10 +97,12 @@ namespace WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CustomerFirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<string>("CustomerLastName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(40)")
+                        .HasMaxLength(40);
 
                     b.Property<int>("LibraryCard")
                         .HasColumnType("int");
@@ -176,7 +184,9 @@ namespace WebAPI.Migrations
 
                     b.HasOne("WebAPI.Models.Rating", "Rating")
                         .WithMany("Books")
-                        .HasForeignKey("RatingId");
+                        .HasForeignKey("RatingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebAPI.Models.Book_Author", b =>

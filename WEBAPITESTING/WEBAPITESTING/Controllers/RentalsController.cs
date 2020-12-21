@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Data;
-using WebAPI.Models;
+using WEBAPITESTING.Data;
+using WEBAPITESTING.Models;
 
-namespace WebAPI.Controllers
+namespace WEBAPITESTING.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
 
         // GET: api/Rentals/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Rental>> GetRental(int id)
+        public async Task<ActionResult<Rental>> GetRental(int? id)
         {
             var rental = await _context.Rentals.FindAsync(id);
             var rentals = await _context.Rentals
@@ -52,9 +52,9 @@ namespace WebAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRental(int id, Rental rental)
+        public async Task<IActionResult> PutRental(int? id, Rental rental)
         {
-            if (id != rental.RentalId)
+            if (id != rental.CustomerId)
             {
                 return BadRequest();
             }
@@ -87,17 +87,30 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Rental>> PostRental(Rental rental)
         {
             rental.RentalDate = DateTime.Now;
-            rental.ReturnDate = DateTime.Now.AddDays(30);
-            rental.Rented = true;
+            rental.ReturnDate = DateTime.Now.AddDays(30);          
             _context.Rentals.Add(rental);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (RentalExists(rental.CustomerId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-            return CreatedAtAction("GetRental", new { id = rental.RentalId }, rental);
+            return CreatedAtAction("GetRental", new { id = rental.CustomerId }, rental);
         }
 
         // DELETE: api/Rentals/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Rental>> DeleteRental(int id)
+        public async Task<ActionResult<Rental>> DeleteRental(int? id)
         {
             var rental = await _context.Rentals.FindAsync(id);
             if (rental == null)
@@ -111,9 +124,9 @@ namespace WebAPI.Controllers
             return rental;
         }
 
-        private bool RentalExists(int id)
+        private bool RentalExists(int? id)
         {
-            return _context.Rentals.Any(e => e.RentalId == id);
+            return _context.Rentals.Any(e => e.CustomerId == id);
         }
     }
 }

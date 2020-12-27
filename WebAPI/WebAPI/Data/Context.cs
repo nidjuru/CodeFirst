@@ -52,10 +52,28 @@ namespace WebAPI.Data
                     .WithMany(c => c.Rentals)
                     .HasForeignKey(sc => sc.CustomerId);
 
-                //
+               
                 modelBuilder.Entity<Rental>()
                         .Property(l => l.RentalDate)
                         .HasDefaultValueSql("GETDATE()");
+
+            //Testar med fluent api att tvinga fram FK, för allt annat fungerar inte. MISERIA
+            //Fungerar fortfarande inte, jag känner mig galen
+            modelBuilder.Entity<Inventory>()
+                    .HasKey(sc => new { sc.BookId, sc.RentalId });
+
+            modelBuilder.Entity<Inventory>()
+                    .HasMany(c => c.Books)
+                    .WithOne(e => e.Inventory)
+                    .HasForeignKey(sc => sc.BookId)
+                    .IsRequired();
+
+            modelBuilder.Entity<Inventory>()
+                    .HasMany(c => c.Rentals)
+                    .WithOne(e => e.Inventory)
+                    .HasForeignKey(sc => sc.RentalId)
+                    .IsRequired();
+
         }
     }
 }

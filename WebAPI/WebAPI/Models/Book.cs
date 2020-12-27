@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,8 +11,10 @@ namespace WebAPI.Models
     {
         public int BookId { get; set; }
         [Required]
+        //[Column(TypeName = "VARCHAR")]
         [MaxLength(40), MinLength(4)]
         public string Title { get; set; }
+        [Required]
         public int ReleaseYear { get; set; }
         [Required]
         public long ISBN { get; set; }

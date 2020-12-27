@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,11 +13,13 @@ namespace WebAPI.Models
         [Required]
         [Range(0, 100000000)]
         public long TelephoneNumber { get; set; }
-        [MaxLength(40), MinLength(4)]
         [Required]
+        //[Column(TypeName = "VARCHAR")]
+        [MaxLength(40), MinLength(4)]
         public string CustomerFirstName { get; set; }
-        [MaxLength(40), MinLength(4)]
         [Required]
+        //[Column(TypeName = "VARCHAR")]
+        [MaxLength(40), MinLength(4)]
 
         public string CustomerLastName { get; set; }
         [Required]

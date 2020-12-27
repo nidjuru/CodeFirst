@@ -17,8 +17,14 @@ namespace WebAPI.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book_Author> Book_Authors { get; set; }
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Rating> Rating { get; set; }
+
+        //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
+        //nalitet
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
+                //Many to many mellan books och authors till Book_Author
                 modelBuilder.Entity<Book_Author>()
                     .HasKey(sc => new { sc.AuthorId, sc.BookId });
 
@@ -31,7 +37,25 @@ namespace WebAPI.Data
                     .HasOne(sc => sc.Book)
                     .WithMany(c => c.Book_Authors)
                     .HasForeignKey(sc => sc.BookId);
-            }
-        public DbSet<WebAPI.Models.Rating> Rating { get; set; }
+                
+                //Many to many mellan Customer och Inventory till Rentals.
+                modelBuilder.Entity<Rental>()
+                .HasKey(sc => new { sc.InventoryId, sc.CustomerId });
+
+                modelBuilder.Entity<Rental>()
+                    .HasOne(sc => sc.Inventory)
+                    .WithMany(s => s.Rentals)
+                    .HasForeignKey(sc => sc.InventoryId);
+
+                modelBuilder.Entity<Rental>()
+                    .HasOne(sc => sc.Customer)
+                    .WithMany(c => c.Rentals)
+                    .HasForeignKey(sc => sc.CustomerId);
+
+                //
+                modelBuilder.Entity<Rental>()
+                        .Property(l => l.RentalDate)
+                        .HasDefaultValueSql("GETDATE()");
+        }
     }
 }

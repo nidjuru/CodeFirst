@@ -14,7 +14,6 @@ namespace WebAPI.Models
         public string Title { get; set; }
         public int ReleaseYear { get; set; }
         [Required]
-        [MaxLength(13), MinLength(13)]
         public long ISBN { get; set; }
 
         public Rating Rating { get; set; }

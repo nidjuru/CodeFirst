@@ -27,9 +27,10 @@ namespace WebAPI.Migrations
                 {
                     CustomerId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerFirstName = table.Column<string>(maxLength: 40, nullable: true),
-                    CustomerLastName = table.Column<string>(maxLength: 40, nullable: true),
-                    LibraryCard = table.Column<int>(nullable: false)
+                    TelephoneNumber = table.Column<long>(nullable: false),
+                    CustomerFirstName = table.Column<string>(maxLength: 40, nullable: false),
+                    CustomerLastName = table.Column<string>(maxLength: 40, nullable: false),
+                    LibraryCard = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,8 +43,8 @@ namespace WebAPI.Migrations
                 {
                     InventoryId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BookId = table.Column<int>(nullable: true),
-                    RentalId = table.Column<int>(nullable: true)
+                    BookId = table.Column<int>(nullable: false),
+                    RentalId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,29 +68,28 @@ namespace WebAPI.Migrations
                 name: "Rentals",
                 columns: table => new
                 {
-                    RentalId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InventoryId = table.Column<int>(nullable: true),
-                    RentalDate = table.Column<DateTime>(nullable: true),
+                    InventoryId = table.Column<int>(nullable: false),
+                    CustomerId = table.Column<int>(nullable: false),
+                    RentalId = table.Column<int>(nullable: false),
+                    RentalDate = table.Column<DateTime>(nullable: true, defaultValueSql: "GETDATE()"),
                     ReturnDate = table.Column<DateTime>(nullable: true),
-                    Rented = table.Column<bool>(nullable: false),
-                    CustomerId = table.Column<int>(nullable: true)
+                    Rented = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rentals", x => x.RentalId);
+                    table.PrimaryKey("PK_Rentals", x => new { x.InventoryId, x.CustomerId });
                     table.ForeignKey(
                         name: "FK_Rentals_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rentals_Inventories_InventoryId",
                         column: x => x.InventoryId,
                         principalTable: "Inventories",
                         principalColumn: "InventoryId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,7 +100,7 @@ namespace WebAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(maxLength: 40, nullable: false),
                     ReleaseYear = table.Column<int>(nullable: false),
-                    ISBN = table.Column<long>(maxLength: 13, nullable: false),
+                    ISBN = table.Column<long>(nullable: false),
                     RatingId = table.Column<int>(nullable: false),
                     InventoryId = table.Column<int>(nullable: true)
                 },
@@ -164,11 +164,6 @@ namespace WebAPI.Migrations
                 name: "IX_Rentals_CustomerId",
                 table: "Rentals",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rentals_InventoryId",
-                table: "Rentals",
-                column: "InventoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

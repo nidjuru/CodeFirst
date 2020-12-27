@@ -87,7 +87,8 @@ namespace WEBAPITESTING.Controllers
         public async Task<ActionResult<Rental>> PostRental(Rental rental)
         {
             rental.RentalDate = DateTime.Now;
-            rental.ReturnDate = DateTime.Now.AddDays(30);          
+            rental.ReturnDate = DateTime.Now.AddDays(30);
+            
             _context.Rentals.Add(rental);
             try
             {

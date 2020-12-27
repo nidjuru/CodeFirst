@@ -80,6 +80,7 @@ namespace WEBAPITESTING.Controllers
         [HttpPost]
         public async Task<ActionResult<Inventory>> PostInventory(Inventory inventory)
         {
+
             _context.Inventories.Add(inventory);
             await _context.SaveChangesAsync();
 

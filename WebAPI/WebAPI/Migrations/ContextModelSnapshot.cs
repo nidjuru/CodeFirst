@@ -47,8 +47,7 @@ namespace WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("ISBN")
-                        .HasColumnType("bigint")
-                        .HasMaxLength(13);
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("InventoryId")
                         .HasColumnType("int");
@@ -97,15 +96,20 @@ namespace WebAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CustomerFirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(40)")
                         .HasMaxLength(40);
 
                     b.Property<string>("CustomerLastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(40)")
                         .HasMaxLength(40);
 
-                    b.Property<int>("LibraryCard")
-                        .HasColumnType("int");
+                    b.Property<long>("LibraryCard")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TelephoneNumber")
+                        .HasColumnType("bigint");
 
                     b.HasKey("CustomerId");
 
@@ -119,10 +123,10 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BookId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RentalId")
+                    b.Property<int>("RentalId")
                         .HasColumnType("int");
 
                     b.HasKey("InventoryId");
@@ -147,19 +151,19 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.Rental", b =>
                 {
-                    b.Property<int>("RentalId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int?>("InventoryId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("InventoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("RentalDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Rented")
                         .HasColumnType("bit");
@@ -167,11 +171,9 @@ namespace WebAPI.Migrations
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("RentalId");
+                    b.HasKey("InventoryId", "CustomerId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("InventoryId");
 
                     b.ToTable("Rentals");
                 });
@@ -208,11 +210,15 @@ namespace WebAPI.Migrations
                 {
                     b.HasOne("WebAPI.Models.Customer", "Customer")
                         .WithMany("Rentals")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WebAPI.Models.Inventory", "Inventory")
                         .WithMany("Rentals")
-                        .HasForeignKey("InventoryId");
+                        .HasForeignKey("InventoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

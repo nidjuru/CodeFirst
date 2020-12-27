@@ -102,6 +102,64 @@ namespace WebAPI.Controllers
             return customer;
         }
 
+        [HttpPost("{customerId}/rentBook/{BookId}")]
+        public async Task<ActionResult<Customer>> RentBook(int customerId, int bookId)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var inventory = await _context.Inventories
+                .Where(i => i.BookId == bookId)
+                .Include(i => i.Rentals)
+                .ToListAsync();
+
+            var availableBook = inventory
+                .FirstOrDefault(i =>
+                i.Rentals == null
+                || i.Rentals.Count == 0
+                || i.Rentals.All(r => r.ReturnDate != null)
+            );
+
+            if (availableBook == null) 
+            {
+                return BadRequest("Book not in stock");
+            }
+
+            var rental = new Rental()
+            {
+                CustomerId = customerId,
+                InventoryId = availableBook.InventoryId,
+                RentalDate = DateTime.Now
+            };
+
+            _context.Rentals.Add(rental);
+            await _context.SaveChangesAsync();
+
+            return Ok("Book rented!");
+
+            //Inventory availableInventoryItem = null;
+            //foreach (var item in inventory) // Kolla om boken är tillgänglig. 
+            //{
+            //    if (item.Rentals == null)
+            //    {
+            //        availableInventoryItem = item;
+            //    }
+            //    else if(item.Rentals.Count == 0)
+            //    {
+            //        availableInventoryItem = item;
+            //    }
+            //    else if (item.Rentals.All(r => r.ReturnDate != null))
+            //    {
+            //        availableInventoryItem = item;
+            //    }
+            //}
+
+            //return Ok();
+        }
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerId == id);

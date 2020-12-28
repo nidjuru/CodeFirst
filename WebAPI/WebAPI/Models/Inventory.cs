@@ -13,11 +13,11 @@ namespace WebAPI.Models
         public int InventoryId { get; set; }
        
         [Required]
-        [ForeignKey("BookId")]
+        //[ForeignKey("BookId")]
         public int BookId { get; set; }
         public List<Book> Books { get; set; }
         [Required]
-        [ForeignKey("RentalId")]
+        //[ForeignKey("RentalId")]
         public int RentalId { get; set; }
         public List<Rental> Rentals { get; set; }
         public bool Available

@@ -18,6 +18,7 @@ namespace WebAPI.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book_Author> Book_Authors { get; set; }
         public DbSet<Rating> Rating { get; set; }
+        public DbSet<User> Users { get; set; }  
 
         //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
         //nalitet
@@ -59,20 +60,20 @@ namespace WebAPI.Data
 
             //Testar med fluent api att tvinga fram FK, för allt annat fungerar inte. MISERIA
             //Fungerar fortfarande inte, jag känner mig galen
-            modelBuilder.Entity<Inventory>()
-                    .HasKey(sc => new { sc.BookId, sc.RentalId });
+            //modelBuilder.Entity<Inventory>()
+            //        .HasKey(sc => new { sc.BookId, sc.RentalId });
 
-            modelBuilder.Entity<Inventory>()
-                    .HasMany(c => c.Books)
-                    .WithOne(e => e.Inventory)
-                    .HasForeignKey(sc => sc.BookId)
-                    .IsRequired();
+            //modelBuilder.Entity<Inventory>()
+            //        .HasMany(c => c.Books)
+            //        .WithOne(e => e.Inventory)
+            //        .HasForeignKey(sc => sc.BookId)
+            //        .IsRequired();
 
-            modelBuilder.Entity<Inventory>()
-                    .HasMany(c => c.Rentals)
-                    .WithOne(e => e.Inventory)
-                    .HasForeignKey(sc => sc.RentalId)
-                    .IsRequired();
+            //modelBuilder.Entity<Inventory>()
+            //        .HasMany(c => c.Rentals)
+            //        .WithOne(e => e.Inventory)
+            //        .HasForeignKey(sc => sc.RentalId)
+            //        .IsRequired();
 
         }
     }

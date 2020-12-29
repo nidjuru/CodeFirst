@@ -18,7 +18,7 @@ namespace WebAPI.Models
         public List<Book> Books { get; set; }
         //[Required]
         ////[ForeignKey("RentalId")]
-        //public int RentalId { get; set; }
+        public int? RentalId { get; set; }
         public List<Rental> Rentals { get; set; }
         public bool Available
         {

@@ -64,7 +64,7 @@ namespace WebAPI.Data
             //modelBuilder.Entity<Inventory>()
             //        .HasMany(c => c.Books)
             //        .WithOne(e => e.Inventory)
-            //        .HasForeignKey(sc => sc.BookId)
+            //        .HasForeignKey(sc => sc.BookId);
             //        .IsRequired();
 
             //modelBuilder.Entity<Inventory>()

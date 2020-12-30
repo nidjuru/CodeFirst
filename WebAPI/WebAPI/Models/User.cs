@@ -12,7 +12,6 @@ namespace WebAPI.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-
         public List<Rental> Rentals { get; set; }
         public int? RentalId { get; set; }
     }

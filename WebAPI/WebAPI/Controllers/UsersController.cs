@@ -106,7 +106,7 @@ namespace WebAPI.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             userWithToken.Token = tokenHandler.WriteToken(token);
-
+            
             return userWithToken;
         }
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Entities;
 using WebAPI.Models;
 
 namespace WebAPI.Data
@@ -78,7 +79,5 @@ namespace WebAPI.Data
 
         //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
         //nalitet
-
-        public DbSet<WebAPI.Models.User> User { get; set; }
     }
 }

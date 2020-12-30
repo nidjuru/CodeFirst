@@ -1,180 +1,113 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebAPI.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using System.Text;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
-using WebAPI.Data;
+using WebAPI.Services;
+using WebAPI.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace WebAPI.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        
-        private readonly Context _context;
-        private readonly JWTSettings _jwtsettings;
+        private IUserService _userService;
 
-        public UsersController(Context context, IOptions<JWTSettings> jwtsettings)
+        public UsersController(IUserService userService)
         {
-            _context = context;
-            _jwtsettings = jwtsettings.Value; 
+            _userService = userService;
         }
 
-        // GET: api/Users
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody] AuthenticateRequest model)
+        {
+            var response = _userService.Authenticate(model, ipAddress());
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            setTokenCookie(response.RefreshToken);
+
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public IActionResult RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = _userService.RefreshToken(refreshToken, ipAddress());
+
+            if (response == null)
+                return Unauthorized(new { message = "Invalid token" });
+
+            setTokenCookie(response.RefreshToken);
+
+            return Ok(response);
+        }
+
+        [HttpPost("revoke-token")]
+        public IActionResult RevokeToken([FromBody] RevokeTokenRequest model)
+        {
+            // accept token from request body or cookie
+            var token = model.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+
+            var response = _userService.RevokeToken(token, ipAddress());
+
+            if (!response)
+                return NotFound(new { message = "Token not found" });
+
+            return Ok(new { message = "Token revoked" });
+        }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public IActionResult GetAll()
         {
-            return await _context.Users.ToListAsync();
+            var users = _userService.GetAll();
+            return Ok(users);
         }
 
-        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public IActionResult GetById(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = _userService.GetById(id);
+            if (user == null) return NotFound();
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
+            return Ok(user);
         }
 
-        // GET: api/Users/
-        [HttpGet("GetUser")]
-        public async Task<ActionResult<User>> GetUser()
+        [HttpGet("{id}/refresh-tokens")]
+        public IActionResult GetRefreshTokens(int id)
         {
-            string emailAddress = HttpContext.User.Identity.Name;
+            var user = _userService.GetById(id);
+            if (user == null) return NotFound();
 
-            var user = await _context.Users
-                             .Where(user => user.EmailAddress == emailAddress)
-                             .FirstOrDefaultAsync();
-
-
-
-            user.Password = null;
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
+            return Ok(user.RefreshTokens);
         }
 
-        // GET: api/Users
-        [HttpGet("Login")]
-        public async Task<ActionResult<UserWithToken>> Login([FromBody] User user)
+        // helper methods
+
+        private void setTokenCookie(string token)
         {
-            user = await _context.Users
-                                    .Where(u => u.EmailAddress == user.EmailAddress
-                                        && u.Password == u.Password)
-                                       .FirstOrDefaultAsync();
-
-            UserWithToken userWithToken = new UserWithToken(user);
-
-            if (userWithToken == null)
+            var cookieOptions = new CookieOptions
             {
-                return NotFound();
-            } 
-
-            // sign your token here
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtsettings.SecretKey);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.EmailAddress)
-                }),
-                Expires = DateTime.UtcNow.AddMonths(6),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            userWithToken.Token = tokenHandler.WriteToken(token);
-            
-            return userWithToken;
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
 
-
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        private string ipAddress()
         {
-            if (id != user.UserId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return user;
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.UserId == id);
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                return Request.Headers["X-Forwarded-For"];
+            else
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
     }
 }

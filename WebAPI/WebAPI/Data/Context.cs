@@ -18,6 +18,7 @@ namespace WebAPI.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book_Author> Book_Authors { get; set; }
         public DbSet<Rating> Rating { get; set; }
+        public DbSet<User> Users { get; set; }
 
         //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
         //nalitet
@@ -74,5 +75,10 @@ namespace WebAPI.Data
             //        .IsRequired();
 
         }
+
+        //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
+        //nalitet
+
+        public DbSet<WebAPI.Models.User> User { get; set; }
     }
 }

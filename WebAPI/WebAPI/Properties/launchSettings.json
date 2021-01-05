@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:57367",//SKILJER SIG NU FRÅN PONTUS, FÖR JAG ÄR Secret teacher..........
+      "applicationUrl": "http://localhost:57367",
       "sslPort": 44356
     }
   },

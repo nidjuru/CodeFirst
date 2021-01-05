@@ -25,6 +25,6 @@ namespace WebAPI.Models
         [Required]
         [Range(0,100000000)]
         public long LibraryCard { get; set; }
-        public List<Rental> Rentals { get; set; }
+        public Rental Rental { get; set; }
     }
 }

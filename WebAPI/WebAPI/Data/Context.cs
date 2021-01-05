@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebAPI.Entities;
 using WebAPI.Models;
 
 namespace WebAPI.Data
@@ -19,7 +18,6 @@ namespace WebAPI.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book_Author> Book_Authors { get; set; }
         public DbSet<Rating> Rating { get; set; }
-        public DbSet<User> Users { get; set; }
 
         //Skapa upp seed data, på grund av alla gånger jag varit tvungen att deleta databasen för ny funktion
         //nalitet
@@ -41,23 +39,23 @@ namespace WebAPI.Data
                     .HasForeignKey(sc => sc.BookId);
                 
                 //Many to many mellan Customer och Inventory till Rentals.
-                modelBuilder.Entity<Rental>()
-                .HasKey(sc => new { sc.InventoryId, sc.CustomerId });
+                //modelBuilder.Entity<Rental>()
+                //.HasKey(sc => new { Inventory.Id });
 
-                modelBuilder.Entity<Rental>()
-                    .HasOne(sc => sc.Inventory)
-                    .WithMany(s => s.Rentals)
-                    .HasForeignKey(sc => sc.InventoryId);
+                //modelBuilder.Entity<Rental>()
+                //    .HasOne(sc => sc.Inventory)
+                //    .WithMany(s => s.Rentals)
+                //    .HasForeignKey(sc => sc.InventoryId);
 
-                modelBuilder.Entity<Rental>()
-                    .HasOne(sc => sc.Customer)
-                    .WithMany(c => c.Rentals)
-                    .HasForeignKey(sc => sc.CustomerId);
+                //modelBuilder.Entity<Rental>()
+                //    .HasOne(sc => sc.Customer)
+                //    .WithMany(c => c.Rentals)
+                //    .HasForeignKey(sc => sc.CustomerId);
 
                
-                modelBuilder.Entity<Rental>()
-                        .Property(l => l.RentalDate)
-                        .HasDefaultValueSql("GETDATE()");
+                //modelBuilder.Entity<Rental>()
+                //        .Property(l => l.RentalDate)
+                //        .HasDefaultValueSql("GETDATE()");
 
             //Testar med fluent api att tvinga fram FK, för allt annat fungerar inte. MISERIA
             //modelBuilder.Entity<Inventory>()

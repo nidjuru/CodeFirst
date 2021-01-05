@@ -15,7 +15,7 @@ namespace WebAPI.Models
         public DateTime? RentalDate { get; set; }//Även fast det är nullable här, så sköter controllern inmatningen automatiskt
         public DateTime? ReturnDate { get; set; }
         public bool Rented { get; set; } = false;//Kolla ifall denna är överflödig!!!!!!!!!!!!!!!!!!!!!
-        public Customer Customer { get; set; }
+        public Customer Customer{ get; set; }
         [Required]
         public int CustomerId { get; set; }
         public bool Returned
